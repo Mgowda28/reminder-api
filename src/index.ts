@@ -3,6 +3,10 @@ import { Hono } from 'hono'
 
 const app = new Hono()
 
+
+serve(app)
+console.log('Server running at http://localhost:3000')
+
 interface Reminder {
   id: string,
   title: string,
@@ -73,8 +77,7 @@ app.delete("/reminders/:id", async (c) => {
   reminders.splice(index, 1);
   return c.json({ message: "Reminder deleted" }, 200);
 });
-serve(app)
-console.log('Server running at http://localhost:3000')
+
 
 app.patch('/reminders/:id/complete', async (c) => {
   const id = c.req.param('id')
@@ -97,13 +100,13 @@ app.patch('/reminders/:id/not-complete', async (c) => {
 
  
 app.get('/reminders/completed', async (c) => {
-  const completedReminders = reminders.filter(r => r.isCompleted)
+  const completedReminders = reminders.filter(r => r.isCompleted === true)
   return c.json(completedReminders)
 })
 
 
 app.get('/reminders/incomplete', async (c) => {
-  const incompleteReminders = reminders.filter(r => !r.isCompleted)
+  const incompleteReminders = reminders.filter(r => !r.isCompleted === true)
   return c.json(incompleteReminders)
 })
 
