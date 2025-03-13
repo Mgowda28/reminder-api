@@ -40,6 +40,27 @@ app.get("/reminders", async (c) => {
 });
 
 
+app.get('/reminders/completed', async (c) => {
+  const completedReminders = reminders.filter(r => r.isCompleted === true)
+  if(completedReminders.length === 0) return c.json({ error: 'No completed reminders found' }, 404)
+  return c.json(completedReminders, 200)
+})
+
+
+app.get('/reminders/incomplete', async (c) => {
+  const incompleteReminders = reminders.filter(r => !r.isCompleted === true)
+  if(incompleteReminders.length === 0) return c.json({ error: 'No incomplete reminders found' }, 404)
+  return c.json(incompleteReminders,200)
+})
+
+
+app.get('/reminders/due-today', async (c) => {
+  const today = new Date().toISOString().split('T')[0]
+  const dueToday = reminders.filter(r => r.dueDate === today)
+  if(dueToday.length === 0) return c.json({ error: 'No reminders due today' }, 404)
+  return c.json(dueToday,200)
+})
+
 
 app.get("/reminders/:id", async (c) => {
   const id = c.req.param("id");
@@ -99,20 +120,3 @@ app.patch('/reminders/:id/not-complete', async (c) => {
 })
 
  
-app.get('/reminders/completed', async (c) => {
-  const completedReminders = reminders.filter(r => r.isCompleted === true)
-  return c.json(completedReminders)
-})
-
-
-app.get('/reminders/incomplete', async (c) => {
-  const incompleteReminders = reminders.filter(r => !r.isCompleted === true)
-  return c.json(incompleteReminders)
-})
-
-
-app.get('/reminders/due-today', async (c) => {
-  const today = new Date().toISOString().split('T')[0]
-  const dueToday = reminders.filter(r => r.dueDate === today)
-  return c.json(dueToday)
-})
